@@ -139,8 +139,17 @@ character.
 4. If you changed `action.yml`, say how you exercised it; the self-test job in CI
    covers all three commands and every input guard, but not every combination of
    `config-path`, `working-directory`, and `node-version`.
-5. Use Conventional Commit messages.
-6. Open a pull request with the template, describing what changed and how you
+5. If you added, removed, or changed an input in `action.yml`, update the
+   commented-YAML block between the `<!-- start usage -->` and
+   `<!-- end usage -->` markers in `README.md` in the same change. This covers
+   the set of inputs and their order, and each input's name, description, and
+   rendered default. The block has no `required` field of its own, so a change to
+   an input's `required` flag also means updating the sentence directly above the
+   markers that says which inputs are required. That block is the input reference
+   and its text comes from `action.yml`. There is no generator for it yet;
+   writing one and running it in CI to fail on drift is a good follow-up.
+6. Use Conventional Commit messages.
+7. Open a pull request with the template, describing what changed and how you
    tested it. Keep the pull request scoped and make sure CI is green.
 
 A maintainer will review your pull request. Please be responsive to feedback, and

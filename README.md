@@ -5,16 +5,110 @@
 <h1 align="center">verbatra GitHub Action</h1>
 
 <p align="center">
-  Run verbatra i18n translations in CI or gate a pull request on locale drift, annotate failures, and write a job summary, using OpenAI, Anthropic, Gemini, DeepL, or an openai-compatible local or self-hosted model.
+  Run verbatra i18n translations in CI or gate a pull request on locale drift, annotate failures, and write a job summary, using OpenAI, Anthropic, Gemini, DeepL, Google Cloud Translation, or an openai-compatible local or self-hosted model.
 </p>
 
 <p align="center">
-  <a href="https://github.com/verbatra/action/actions/workflows/ci.yml"><img src="https://github.com/verbatra/action/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI" /></a>
-  <a href="https://www.npmjs.com/package/@verbatra/cli"><img src="https://img.shields.io/npm/v/@verbatra/cli?label=%40verbatra%2Fcli" alt="@verbatra/cli npm version" /></a>
-  <a href="https://github.com/marketplace/actions/verbatra"><img src="https://img.shields.io/github/v/release/verbatra/action?sort=semver&amp;label=marketplace&amp;color=blue" alt="GitHub Marketplace" /></a>
-  <a href="https://github.com/verbatra/verbatra"><img src="https://img.shields.io/badge/project-verbatra-blue.svg" alt="Part of the verbatra project" /></a>
-  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT" /></a>
+  <a href="https://github.com/verbatra/action/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/verbatra/action/ci.yml?branch=main&amp;label=Action%20CI&amp;color=7b1fa2&amp;labelColor=0B0B12" alt="Action CI" /></a>
+  <a href="https://github.com/marketplace/actions/verbatra"><img src="https://img.shields.io/github/v/release/verbatra/action?sort=semver&amp;label=marketplace&amp;color=7b1fa2&amp;labelColor=0B0B12" alt="GitHub Marketplace release" /></a>
+  <a href="https://www.npmjs.com/package/@verbatra/cli"><img src="https://img.shields.io/npm/v/%40verbatra%2Fcli?label=%40verbatra%2Fcli&amp;color=7b1fa2&amp;labelColor=0B0B12" alt="@verbatra/cli npm version" /></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?color=7b1fa2&amp;labelColor=0B0B12" alt="License: MIT" /></a>
 </p>
+
+## What's new in v1
+
+`v1` is the only maintained line: every fix and feature lands there, and the `v1`
+tag moves to the newest release. Entries are newest first. Every v1 release has
+the same runner floor, because the action has pinned
+`actions/setup-node@820762786026740c76f36085b0efc47a31fe5020` (v7.0.0) since
+`v1.0.0` and that action runs on the `node24` runtime.
+
+### v1.2.0
+
+**Breaking.** The action now requires a recognized verbatra config directly
+inside the resolved `working-directory` and fails before installing anything when
+there is none. The lookup never walks up into a parent or ancestor directory, so
+a shared config at the repository root no longer satisfies a `working-directory`
+that points at a subdirectory. The failure names the exact path it checked and
+the input that controls it. Once a config is found, it is always passed to the
+CLI explicitly with `--config`.
+
+Also breaking: the `version` input is now rejected unless it is `0.9.3` or newer,
+because earlier CLI releases resolve a `verbatra.config.ts` import of
+`defineConfig` against the config file's own location instead of against the
+running CLI, and the action no longer works around that.
+
+This release also retired the `v2` prerelease and settled on the single `v1`
+line described above.
+
+Minimum runner: Actions Runner v2.327.1. Minimum `@verbatra/cli`: 0.9.3.
+
+### v1.1.4
+
+No breaking change, and no input contract change. Fixes the action merging its
+scratch install into the consumer's own `node_modules`, which could overwrite
+dependency versions in the checked-out tree or crash on a name collision with one
+of the CLI's transitive dependencies.
+
+Its release notes recommend moving to a `v2` line. That prerelease has since been
+retired; `v1` is the maintained line, and `v1.2.0` or newer is the upgrade.
+
+Minimum runner: Actions Runner v2.327.1.
+
+### v1.1.3
+
+No breaking change. `npm install --prefix` still parsed the consumer's existing
+`package.json`, so a pnpm or Yarn workspace-protocol dependency string there
+(`workspace:*`, pnpm's `catalog:`) crashed the install. The CLI now installs into
+an isolated scratch directory, and npm never reads the consumer's manifest.
+
+Minimum runner: Actions Runner v2.327.1.
+
+### v1.1.2
+
+No breaking change. Installing through a bare `npx --yes` put the CLI in an
+ephemeral cache that is never an ancestor of the config file on disk, so every
+`verbatra.config.ts` importing `defineConfig` failed with `CONFIG_INVALID`. The
+action now installs `@verbatra/cli` and `@verbatra/sdk` at the pinned version and
+invokes the binary through `npm exec`, which also fixed a Windows-runner failure.
+
+Minimum runner: Actions Runner v2.327.1.
+
+### v1.1.1
+
+No breaking change, and no behavior change. `action.yml`'s description was
+translation-only, which hid the read-only gate from the Marketplace listing.
+
+Minimum runner: Actions Runner v2.327.1.
+
+### v1.1.0
+
+No breaking change. Adds the `command` input, so the action can run the CLI's
+read-only `check` and `diff` commands as well as `translate`. Both are read-only:
+no provider call, no API key, no quota, so they gate a pull request from a fork.
+`command` defaults to `translate`, so existing workflows are unaffected.
+`dry-run` applies to `translate` only and is now rejected with the other two
+rather than ignored.
+
+Minimum runner: Actions Runner v2.327.1.
+
+### v1.0.1
+
+Documentation only. No breaking change, no behavior change, and no input
+contract change. The README and security policy carried at the release tag still
+described the action as unpublished with no releases; this brought the tagged
+tree in line with the default branch, which the Marketplace listing already
+rendered from.
+
+Minimum runner: Actions Runner v2.327.1.
+
+### v1.0.0
+
+First published release and the initial Marketplace listing: `translate` in CI,
+with annotations, a job summary, and the CLI's exit code propagated. Inputs:
+`version`, `config-path`, `working-directory`, `dry-run`, `node-version`.
+
+Minimum runner: Actions Runner v2.327.1.
 
 ## What it does
 
@@ -101,16 +195,71 @@ The `command` input selects which CLI command runs. All three report through the
 
 ## Inputs
 
-| Input | Required | Default | Description |
-| --- | --- | --- | --- |
-| `version` | yes | none | The `@verbatra/cli` version to run, for example `0.9.3`. Must be an exact semver version; a dist-tag such as `latest`, a range, or a `^`/`~` prefix fails the step. Must also be `0.9.3` or newer; an older pin fails the step. This is a different number from the action's own `v1` tag above; see [Versioning](#versioning). |
-| `command` | no | `translate` | Which command to run: `translate`, `check`, or `diff`. See [Choosing a command](#choosing-a-command). Any other value fails the step. |
-| `config-path` | no | `""` | Explicit config file to load (maps to `--config`). A relative path resolves against `working-directory`, not against the repository root. Empty (the default) requires a recognized config file directly inside `working-directory`; the step fails before installing the CLI when none is found there. |
-| `working-directory` | no | `""` | Directory to resolve config and locale files against (maps to `--cwd`). Config lookup is strict, not inherited: it looks only directly inside this directory, never a parent or ancestor, even the repository root. See [Config discovery](#config-discovery). |
-| `dry-run` | no | `"false"` | Report what would change without calling a provider or writing (maps to `--dry-run`). Applies only to `translate`; combining it with `check` or `diff` fails the step. |
-| `node-version` | no | `"24"` | Node.js version to set up for running the CLI. |
+Every input and its default, generated from [`action.yml`](./action.yml).
+`version` is the only required one.
 
-The action declares no outputs. Its results are delivered as annotations, a job summary, and the job's exit status.
+<!-- start usage -->
+```yaml
+- uses: verbatra/action@v1
+  with:
+    # The @verbatra/cli version to run, e.g. 1.2.3. PIN this to an exact version for
+    # reproducible, supply-chain-safe CI; do NOT use a floating tag such as "latest" (it
+    # pulls whatever is newest at run time, which is non-reproducible and would auto-pull
+    # a compromised release). The action rejects anything that is not an exact semver
+    # (dist-tags, ranges, and ^/~ prefixes all fail the step). Must be 0.9.3 or newer:
+    # older releases resolve a verbatra.config.ts import of defineConfig from
+    # @verbatra/cli or @verbatra/sdk against the config file's own location rather than
+    # against the running CLI, and the action no longer works around that. Required.
+    version: ''
+
+    # Which verbatra command to run. One of "translate" (default, writes translations),
+    # "check" (read-only, exits 1 when any locale has missing or stale keys), or "diff"
+    # (read-only, exits 1 when any locale has pending changes). The read-only commands
+    # need no provider API key, so they work as a CI gate on a fork pull request. Anything
+    # outside that set fails the step.
+    # Default: translate
+    command: translate
+
+    # Explicit config file to load (maps to --config). A relative path resolves against
+    # working-directory, not against the repository root. Empty (the default) requires a
+    # recognized verbatra config file directly inside working-directory; the step fails
+    # before installing the CLI when none is found there. The lookup is strict and not
+    # inherited: it never walks up into a parent directory or the repository root, even
+    # when one of them holds a valid config.
+    # Default: ''
+    config-path: ''
+
+    # Directory to resolve config and locale files against (maps to --cwd). Config lookup
+    # (when config-path is empty) is strict: it looks only directly inside this directory,
+    # never a parent or ancestor, even when working-directory is unset and resolves to the
+    # repository root. For example, in a monorepo where the app to translate lives at
+    # apps/docs, set working-directory to apps/docs and put the config there; a config at
+    # the repository root does not satisfy the check.
+    # Default: ''
+    working-directory: ''
+
+    # Report what would change without calling a provider or writing (maps to --dry-run).
+    # Applies only to the translate command; combining it with check or diff fails the
+    # step, because those commands are already read-only and the CLI rejects the flag.
+    # Default: false
+    dry-run: "false"
+
+    # Node.js version to set up for running the CLI.
+    # Default: 24
+    node-version: "24"
+```
+<!-- end usage -->
+
+`version` names the `@verbatra/cli` release the action installs. It is a
+different number from the action's own `v1` tag in `uses:`; see
+[Versioning](#versioning). For what `command` selects, see
+[Choosing a command](#choosing-a-command). For how `config-path` and
+`working-directory` interact, see [Config discovery](#config-discovery).
+
+## Outputs
+
+The action declares no outputs: `action.yml` has no `outputs:` block. Results are
+delivered as annotations, a job summary, and the job's exit status.
 
 ## Config discovery
 
@@ -149,6 +298,7 @@ API keys come only from environment variables, never from action inputs or a lit
 | `openai` | `OPENAI_API_KEY` |
 | `gemini` | `GEMINI_API_KEY` |
 | `deepl` | `DEEPL_API_KEY` |
+| `google-translate` | `GOOGLE_TRANSLATE_API_KEY` |
 | `openai-compatible` | `OPENAI_COMPATIBLE_API_KEY`, or the variable named by `provider.options.apiKeyEnvVar`; omit entirely for a server that needs no key |
 
 Set only the keys your configured provider needs, and each value must be a `${{ secrets.* }}` reference, never a literal. Keys are never echoed: the action's own error messages name the variable but never a value.
@@ -162,18 +312,18 @@ Every run writes a job summary to `GITHUB_STEP_SUMMARY` (a per-locale counts tab
 `v1` is the only maintained line: every fix and feature lands there. Pin `v1` for convenience (it moves to the latest `v1.x.y` release), a specific `v1.x.y` tag for an immutable minor pin, or a full commit SHA for the most reproducible reference:
 
 ```yaml
-      - uses: verbatra/action@d8276d514f16fa03001be1eda14778c637eb1f0f # v1.2.0
+      - uses: verbatra/action@0221b030d517d8af621fb6b812fcfd17a1f940ee # v1.2.0
 ```
 
 Keep the human-readable version in a trailing comment so the pin stays reviewable, and let Dependabot propose the SHA bumps.
 
-An early `v2` prerelease existed briefly as a one-time breaking snapshot; it has been retired in favor of this single, continuously updated `v1` line.
+An early `v2` prerelease existed briefly as a one-time breaking snapshot; it has been retired in favor of this single, continuously updated `v1` line. [What's new in v1](#whats-new-in-v1) lists every release on it, newest first.
 
 Two things need pinning for reproducible, supply-chain-safe CI: the `uses:` reference above, and the `version` input, which must be an exact semver `@verbatra/cli` release (`0.9.3` or newer) rather than a floating tag such as `latest` or a range. The action rejects anything else before installing.
 
 ## Requirements
 
-- A GitHub-hosted or self-hosted runner with `bash` available. The action sets up Node.js itself via `actions/setup-node`, so no Node.js step of your own is required.
+- A GitHub-hosted or self-hosted runner with `bash` available, on Actions Runner v2.327.1 or newer. The action sets up Node.js itself via `actions/setup-node` v7.0.0, which runs on the `node24` runtime and needs that runner floor, so no Node.js step of your own is required.
 - Network access to the npm registry, to install `@verbatra/cli` at run time.
 - A verbatra config directly inside the resolved `working-directory` (the repository root by default), plus locale files there. See [Config discovery](#config-discovery).
 
