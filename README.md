@@ -92,6 +92,16 @@ rather than ignored.
 
 Minimum runner: Actions Runner v2.327.1.
 
+### v1.0.1
+
+Documentation only. No breaking change, no behavior change, and no input
+contract change. The README and security policy carried at the release tag still
+described the action as unpublished with no releases; this brought the tagged
+tree in line with the default branch, which the Marketplace listing already
+rendered from.
+
+Minimum runner: Actions Runner v2.327.1.
+
 ### v1.0.0
 
 First published release and the initial Marketplace listing: `translate` in CI,
@@ -208,7 +218,7 @@ Every input and its default, generated from [`action.yml`](./action.yml).
     # need no provider API key, so they work as a CI gate on a fork pull request. Anything
     # outside that set fails the step.
     # Default: translate
-    command: ''
+    command: translate
 
     # Explicit config file to load (maps to --config). A relative path resolves against
     # working-directory, not against the repository root. Empty (the default) requires a
@@ -232,11 +242,11 @@ Every input and its default, generated from [`action.yml`](./action.yml).
     # Applies only to the translate command; combining it with check or diff fails the
     # step, because those commands are already read-only and the CLI rejects the flag.
     # Default: false
-    dry-run: ''
+    dry-run: "false"
 
     # Node.js version to set up for running the CLI.
     # Default: 24
-    node-version: ''
+    node-version: "24"
 ```
 <!-- end usage -->
 
@@ -302,7 +312,7 @@ Every run writes a job summary to `GITHUB_STEP_SUMMARY` (a per-locale counts tab
 `v1` is the only maintained line: every fix and feature lands there. Pin `v1` for convenience (it moves to the latest `v1.x.y` release), a specific `v1.x.y` tag for an immutable minor pin, or a full commit SHA for the most reproducible reference:
 
 ```yaml
-      - uses: verbatra/action@d8276d514f16fa03001be1eda14778c637eb1f0f # v1.2.0
+      - uses: verbatra/action@0221b030d517d8af621fb6b812fcfd17a1f940ee # v1.2.0
 ```
 
 Keep the human-readable version in a trailing comment so the pin stays reviewable, and let Dependabot propose the SHA bumps.
