@@ -1,0 +1,41 @@
+name: Feature request
+description: Suggest an idea or improvement for the verbatra GitHub Action.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for the action's own surface: a new input, an output, different annotations, or a different job summary. Ideas about translation behavior, formats, or providers belong in the [main repository](https://github.com/verbatra/verbatra/issues/new/choose).
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / motivation
+      description: What problem would this solve in your CI, or what need does it address?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: What you would like the action to do, and how you would express it in a workflow.
+      render: yaml
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Other approaches you have thought about, including whether a step of your own around the action would already do it.
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+    validations:
+      required: false
