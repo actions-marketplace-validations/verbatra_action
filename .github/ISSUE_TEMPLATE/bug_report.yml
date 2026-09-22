@@ -1,0 +1,118 @@
+name: Bug report
+description: Report a problem with the verbatra GitHub Action.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for problems with the action itself: its inputs, the `action.yml` wiring, the annotations, or the job summary. Problems with translation behavior, formats, providers, or the CLI belong in the [main repository](https://github.com/verbatra/verbatra/issues/new/choose).
+
+  - type: input
+    id: action-ref
+    attributes:
+      label: Action reference
+      description: "The tag or commit SHA after `uses: verbatra/action@`."
+      placeholder: v1.2.0
+    validations:
+      required: true
+
+  - type: input
+    id: cli-version
+    attributes:
+      label: "`version` input"
+      description: The pinned `@verbatra/cli` version.
+      placeholder: 0.9.3
+    validations:
+      required: true
+
+  - type: input
+    id: runner
+    attributes:
+      label: Runner OS
+      description: For example `ubuntu-latest`, or your self-hosted runner's OS and runner version.
+      placeholder: ubuntu-latest
+    validations:
+      required: true
+
+  - type: input
+    id: node-version
+    attributes:
+      label: "`node-version` input"
+      description: Only if you set one.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: command
+    attributes:
+      label: "`command` input"
+      options:
+        - translate
+        - check
+        - diff
+    validations:
+      required: true
+
+  - type: input
+    id: provider
+    attributes:
+      label: Provider (if relevant)
+      placeholder: gemini
+    validations:
+      required: false
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: A clear description of the bug.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What you expected to happen instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      value: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+
+  - type: textarea
+    id: workflow
+    attributes:
+      label: Workflow snippet
+      description: The step that runs the action, and the surrounding `permissions:` and `env:` blocks.
+      render: yaml
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: The failing step's output, and the job summary if it rendered. Redact API keys and other secrets before posting. GitHub masks secret values in logs, but a value you copy out of a config file or an error message of your own is not masked.
+      render: shell
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and did not find a duplicate.
+          required: true
+        - label: I removed API keys and other secrets from anything pasted above.
+          required: true
