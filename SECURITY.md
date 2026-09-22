@@ -42,7 +42,9 @@ consumer who runs this action.
 
 - **Every `uses:` reference is pinned to a full commit SHA**, in the workflows and
   in the composite `action.yml` itself, with the human-readable version kept in a
-  trailing comment so the pin stays reviewable.
+  trailing comment so the pin stays reviewable. The repository requires it:
+  pinning is enforced by GitHub, not only by code review, so a workflow that
+  reintroduces a mutable tag fails.
 - **The `version` input must be an exact semver version.** The action rejects
   dist-tags such as `latest`, ranges, and `^` or `~` prefixes, and it does so
   before anything is installed. A floating version would resolve at run time to
@@ -53,13 +55,22 @@ consumer who runs this action.
   echoing the value back.
 - **The lockfile is committed and CI installs are frozen** with `npm ci`, so a
   build resolves the exact dependency tree that was reviewed.
-- **Workflows default to a read-only token.** The CI workflow declares
-  `contents: read` at the workflow level, and both jobs restate it at the job
+- **Workflows default to a read-only token.** Every workflow declares
+  `contents: read` at the workflow level, and every job restates it at the job
   level so a later workflow-level widening cannot silently reach them. Nothing
-  here writes to the repository, comments on a pull request, or publishes.
+  here writes to the repository, comments on a pull request, or publishes. The
+  one write scope anywhere is `security-events: write`, confined to the job that
+  uploads the OpenSSF Scorecard results to code scanning.
+- **Releases and their tags cannot be rewritten.** Releases are immutable, so a
+  published release's tag and assets cannot change after the fact, and a
+  repository ruleset blocks creating, moving, or deleting a `v*` tag for
+  everyone but a repository administrator. The moving `v1` tag is the one tag
+  that is updated on purpose, by an administrator, when a release ships.
 - **Dependabot runs weekly** over both the npm manifest and every Actions
   manifest, which is what keeps the SHA pins current: without it a pin ages
   silently instead of drifting visibly.
+- **CodeQL and OpenSSF Scorecard scan the repository**, so a workflow or script
+  weakness surfaces in code scanning without waiting for a review to spot it.
 - **Secret scanning and push protection are enabled** on this repository.
 - **Untrusted values never reach a workflow command unescaped.** Action inputs
   travel to bash through `env:` as data and are expanded into a quoted array, so a
