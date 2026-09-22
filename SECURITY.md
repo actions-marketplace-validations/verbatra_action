@@ -40,7 +40,7 @@ private and carries devDependencies only, so this repository has no publishing
 credentials and no release token to leak. The controls below are what protect a
 consumer who runs this action.
 
-- **Every `uses:` reference is pinned to a full commit SHA**, in the workflows and
+- **Every external `uses:` reference is pinned to a full commit SHA**, in the workflows and
   in the composite `action.yml` itself, with the human-readable version kept in a
   trailing comment so the pin stays reviewable. The repository requires it:
   pinning is enforced by GitHub, not only by code review, so a workflow that
@@ -71,6 +71,8 @@ consumer who runs this action.
   silently instead of drifting visibly.
 - **CodeQL and OpenSSF Scorecard scan the repository**, so a workflow or script
   weakness surfaces in code scanning without waiting for a review to spot it.
+  CodeQL runs as GitHub's default setup, configured in the repository settings
+  rather than in a workflow file; Scorecard runs from `scorecard.yml`.
 - **Secret scanning and push protection are enabled** on this repository.
 - **Untrusted values never reach a workflow command unescaped.** Action inputs
   travel to bash through `env:` as data and are expanded into a quoted array, so a
