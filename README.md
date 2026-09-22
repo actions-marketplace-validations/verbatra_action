@@ -12,6 +12,7 @@
   <a href="https://github.com/verbatra/action/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/verbatra/action/ci.yml?branch=main&amp;label=Action%20CI&amp;color=7b1fa2&amp;labelColor=0B0B12" alt="Action CI" /></a>
   <a href="https://github.com/marketplace/actions/verbatra"><img src="https://img.shields.io/github/v/release/verbatra/action?sort=semver&amp;label=marketplace&amp;color=7b1fa2&amp;labelColor=0B0B12" alt="GitHub Marketplace release" /></a>
   <a href="https://www.npmjs.com/package/@verbatra/cli"><img src="https://img.shields.io/npm/v/%40verbatra%2Fcli?label=%40verbatra%2Fcli&amp;color=7b1fa2&amp;labelColor=0B0B12" alt="@verbatra/cli npm version" /></a>
+  <a href="https://scorecard.dev/viewer/?uri=github.com/verbatra/action"><img src="https://img.shields.io/ossf-scorecard/github.com/verbatra/action?label=openssf%20scorecard&amp;labelColor=0B0B12" alt="OpenSSF Scorecard" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?color=7b1fa2&amp;labelColor=0B0B12" alt="License: MIT" /></a>
 </p>
 
