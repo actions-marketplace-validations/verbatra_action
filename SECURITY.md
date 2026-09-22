@@ -59,8 +59,11 @@ consumer who runs this action.
   `contents: read` at the workflow level, and every job restates it at the job
   level so a later workflow-level widening cannot silently reach them. Nothing
   here writes to the repository, comments on a pull request, or publishes. The
-  one write scope anywhere is `security-events: write`, confined to the job that
-  uploads the OpenSSF Scorecard results to code scanning.
+  only other scopes are in the OpenSSF Scorecard workflow: `id-token: write` on
+  the analysis job, which the Scorecard API uses to verify that published
+  results came from this repository, and `security-events: write` on the job
+  that uploads the results to code scanning. Neither can write to the
+  repository's contents.
 - **Releases and their tags cannot be rewritten.** Releases are immutable, so a
   published release's tag and assets cannot change after the fact, and a
   repository ruleset blocks creating, moving, or deleting a `v*` tag for
